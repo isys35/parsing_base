@@ -17,6 +17,11 @@ class Parser:
         with open(f'{self.html_files_catlog_name}/{file_name}', 'w', encoding='utf8') as file:
             file.write(txt)
 
+    def save_image(self, url, image_name):
+        resp = self.request.get(url)
+        with open(f"{image_name}", 'wb') as out:
+            out.write(resp.content)
+
 
 class Request:
     def __init__(self):
@@ -65,6 +70,4 @@ async def req(urls, headers):
 
 if __name__ == '__main__':
     parser = Parser()
-    pages = parser.requests.get(['https://www.oddsportal.com', 'https://www.oddsportal.com/soccer/africa/africa-cup-of-nations-u17/nigeria-guinea-phI9AlJb/'])
-    parser.save_html(pages[0], '1.html')
-    parser.save_html(pages[1], '2.html')
+    parser.save_image('https://lh6.googleusercontent.com/ZY4CBHPSAwQvG1F9aEfxbaT9_feFhM0bR_tyxRYfYkJJoqCaIuc2NYegmvQm9E-D-AVjwOKa3afVaHnO1-eyauuTk34vuQHhZJw8F7SG4rhDtHR-Jx5MCle_sCFw5E_3UtvAI-zQ', 'image.png')
