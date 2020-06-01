@@ -37,7 +37,7 @@ class Request:
         if response.status_code == 200:
             return response
         else:
-            print(response.status_code)
+            print(response)
             sys.exit()
 
 
