@@ -2,6 +2,7 @@ import requests
 import sys
 import os
 import asyncio, aiohttp
+import httplib2
 from urllib.parse import unquote, quote
 
 
@@ -18,9 +19,10 @@ class Parser:
             file.write(txt)
 
     def save_image(self, url, image_name):
-        resp = self.request.get(url)
+        h = httplib2.Http('.cache')
+        response, content = h.request(url)
         with open(f"{image_name}", 'wb') as out:
-            out.write(resp.content)
+            out.write(content)
 
     @staticmethod
     def split_list(lst, size_lst):
