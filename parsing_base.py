@@ -44,6 +44,17 @@ class Request:
             print(response)
             sys.exit()
 
+    def post(self, url, json_data, headers=None):
+        if headers is None:
+            response = requests.post(url, headers=self.headers, json=json_data)
+        else:
+            response = requests.post(url, headers=headers, json=json_data)
+        if response.status_code == 200:
+            return response
+        else:
+            print(response)
+            sys.exit()
+
 
 class Requests(Request):
     def __init__(self):
@@ -52,7 +63,13 @@ class Requests(Request):
     def get(self, urls, headers=None):
         if headers is None:
             headers = [self.headers for _ in range(len(urls))]
-        data = asyncio.run(req(urls, headers))
+        data = asyncio.run(req_get(urls, headers))
+        return data
+
+    def post(self, urls, json_data, headers=None):
+        if headers is None:
+            headers = [self.headers for _ in range(len(urls))]
+        data = asyncio.run(req_post(urls, json_data, headers))
         return data
 
 
@@ -62,11 +79,27 @@ async def fetch_content(url, session, headers):
         return data
 
 
-async def req(urls, headers):
+async def req_get(urls, headers):
     tasks = []
     async with aiohttp.ClientSession() as session:
         for i in range(0, len(urls)):
             task = asyncio.create_task(fetch_content(urls[i], session, headers[i]))
+            tasks.append(task)
+        data = await asyncio.gather(*tasks)
+        return data
+
+
+async def fetch_content_post(url, session, headers, json_data):
+    async with session.post(url, json=json_data, headers=headers) as response:
+        data = await response.text()
+        return data
+
+
+async def req_post(urls,json_data, headers):
+    tasks = []
+    async with aiohttp.ClientSession() as session:
+        for i in range(0, len(urls)):
+            task = asyncio.create_task(fetch_content_post(urls[i], session, headers[i], json_data[i]))
             tasks.append(task)
         data = await asyncio.gather(*tasks)
         return data
