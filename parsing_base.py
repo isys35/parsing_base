@@ -3,6 +3,7 @@ import sys
 import os
 import asyncio, aiohttp
 import httplib2
+import pickle
 from urllib.parse import unquote, quote
 
 
@@ -10,13 +11,30 @@ class Parser:
     def __init__(self):
         self.request = Request()
         self.requests = Requests()
-        self.html_files_catlog_name = 'html_files'
+        self.html_files_catalog_name = 'html_files'
+        self.object_files_catalog_name = 'object_files'
 
     def save_html(self, txt, file_name):
-        if self.html_files_catlog_name not in os.listdir():
+        if self.html_files_catalog_name not in os.listdir():
             os.mkdir('html_files')
-        with open(f'{self.html_files_catlog_name}/{file_name}', 'w', encoding='utf8') as file:
+        with open(f'{self.html_files_catalog_name}/{file_name}', 'w', encoding='utf8') as file:
             file.write(txt)
+
+    def save_object(self, object, file_name):
+        with open(f'{self.object_files_catalog_name}/{file_name}', 'wb') as file:
+            pickle.dump(object, file)
+
+    def load_object(self, file_name):
+        with open(f'{self.object_files_catalog_name}/{file_name}', 'rb') as file:
+            object = pickle.load(file)
+        return object
+
+    def load_objects(self):
+        objects = []
+        for file_name in os.listdir(self.object_files_catalog_name):
+            with open(f'{self.object_files_catalog_name}/{file_name}', 'rb') as file:
+                object = pickle.load(file)
+            objects.append(object)
 
     def save_image(self, url, image_name):
         h = httplib2.Http('.cache')
