@@ -16,11 +16,13 @@ class Parser:
 
     def save_html(self, txt, file_name):
         if self.html_files_catalog_name not in os.listdir():
-            os.mkdir('html_files')
+            os.mkdir(self.html_files_catalog_name)
         with open(f'{self.html_files_catalog_name}/{file_name}', 'w', encoding='utf8') as file:
             file.write(txt)
 
     def save_object(self, object, file_name):
+        if self.html_files_catalog_name not in os.listdir():
+            os.mkdir(self.object_files_catalog_name)
         with open(f'{self.object_files_catalog_name}/{file_name}', 'wb') as file:
             pickle.dump(object, file)
 
