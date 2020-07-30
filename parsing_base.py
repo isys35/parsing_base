@@ -7,7 +7,7 @@ import pickle
 from urllib.parse import unquote, quote
 
 
-class Parser:
+class ParserBase:
     def __init__(self):
         self.request = Request()
         self.requests = Requests()
@@ -21,13 +21,11 @@ class Parser:
             file.write(txt)
 
     def save_object(self, object, file_name):
-        if self.html_files_catalog_name not in os.listdir():
-            os.mkdir(self.object_files_catalog_name)
-        with open(f'{self.object_files_catalog_name}/{file_name}', 'wb') as file:
+        with open(f'{file_name}', 'wb') as file:
             pickle.dump(object, file)
 
     def load_object(self, file_name):
-        with open(f'{self.object_files_catalog_name}/{file_name}', 'rb') as file:
+        with open(f'{file_name}', 'rb') as file:
             object = pickle.load(file)
         return object
 
